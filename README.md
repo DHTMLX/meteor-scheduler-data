@@ -6,13 +6,7 @@ Allows using [dhtmlxScheduler](http://dhtmlx.com/docs/products/dhtmlxScheduler) 
 How to use
 -----------
 
-- Add the [dhtmlxScheduler package](https://atmospherejs.com/dhtmlx/scheduler):
-
-    ```sh
-    meteor add dhtmlx:scheduler
-    ```
-
-- Then add the [dhtmlxScheduler data adapter](https://atmospherejs.com/dhtmlx/scheduler-data):
+- Add the [dhtmlxScheduler data adapter](https://atmospherejs.com/dhtmlx/scheduler-data):
 
     ```sh
     meteor add dhtmlx:scheduler-data
@@ -51,8 +45,11 @@ How to use
 	Meteor.startup(function() {
 	  //Init dhtmlxScheduler.
 	  scheduler.init("scheduler_here", new Date());
+
 	  //Init dhtmlxScheduler data adapter.
-	  schedulerMeteor(scheduler, TasksCollection);
+	  scheduler.meteor(TasksCollection);
+	  //or
+	  scheduler.meteor(TasksCollection.find(/*[anything]*/), TasksCollection);
 	});
     ```
 
