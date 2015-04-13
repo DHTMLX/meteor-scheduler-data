@@ -1,28 +1,39 @@
-schedulerMeteor = function(scheduler, collection) {
+scheduler.meteor = function(collection) {
+    var collectionCursor = null ;
+
+    if(arguments.length == 2) {
+        collectionCursor = arguments[0];
+        collection = arguments[1];
+    }
+    else
+        collectionCursor = collection.find();
+
     var CollectionPerformerObj = new CollectionPerformer(collection);
 
-    scheduler.attachEvent("onEventChanged", function(eventId, event) {
+    this.attachEvent("onEventChanged", function(eventId, event) {
         CollectionPerformerObj.save(event);
     });
 
-    scheduler.attachEvent("onEventDeleted", function(eventId) {
+    this.attachEvent("onEventDeleted", function(eventId) {
         CollectionPerformerObj.remove(eventId);
     });
 
-    scheduler.attachEvent("onEventAdded", function(eventId, event) {
+    this.attachEvent("onEventAdded", function(eventId, event) {
         CollectionPerformerObj.save(event);
     });
 
-    collection.find().observe({
+    var self = this;
+    collectionCursor.observe({
+
         added: function(data) {
             var eventData = parseEventData(data);
-            if(!scheduler.getEvent(eventData.id))
-                scheduler.addEvent(eventData);
+            if(!self.getEvent(eventData.id))
+                self.addEvent(eventData);
         },
 
         changed: function(data) {
             var eventData = parseEventData(data),
-                event = scheduler.getEvent(eventData.id);
+                event = self.getEvent(eventData.id);
 
             if(!event)
                 return false;
@@ -30,13 +41,13 @@ schedulerMeteor = function(scheduler, collection) {
             for(var key in eventData)
                 event[key] = eventData[key];
 
-            scheduler.updateEvent(eventData.id);
+            self.updateEvent(eventData.id);
             return true;
         },
 
         removed: function(data) {
-            if(scheduler.getEvent(data.id))
-                scheduler.deleteEvent(data.id);
+            if(self.getEvent(data.id))
+                self.deleteEvent(data.id);
         }
 
     });
