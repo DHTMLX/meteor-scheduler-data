@@ -53,6 +53,10 @@ How to use
 	});
     ```
 
+- Stop the data adapter:
+    ```js
+	scheduler.meteorStop();
+    ```
 That is it.
 
 License

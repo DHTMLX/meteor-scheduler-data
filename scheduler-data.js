@@ -1,4 +1,8 @@
+var gCollectionObserver = null,
+    gEventsCollection = null;
+
 scheduler.meteor = function(collection) {
+    gEventsCollection = new DataCollection();
     var collectionCursor = null ;
 
     if(arguments.length == 2) {
@@ -10,20 +14,25 @@ scheduler.meteor = function(collection) {
 
     var CollectionPerformerObj = new CollectionPerformer(collection);
 
-    this.attachEvent("onEventChanged", function(eventId, event) {
+    gEventsCollection.add(this.attachEvent("onEventLoading", function(event) {
         CollectionPerformerObj.save(event);
-    });
+        return true;
+    }));
 
-    this.attachEvent("onEventDeleted", function(eventId) {
+    gEventsCollection.add(this.attachEvent("onEventChanged", function(eventId, event) {
+        CollectionPerformerObj.save(event);
+    }));
+
+    gEventsCollection.add(this.attachEvent("onEventDeleted", function(eventId) {
         CollectionPerformerObj.remove(eventId);
-    });
+    }));
 
-    this.attachEvent("onEventAdded", function(eventId, event) {
+    gEventsCollection.add(this.attachEvent("onEventAdded", function(eventId, event) {
         CollectionPerformerObj.save(event);
-    });
+    }));
 
     var self = this;
-    collectionCursor.observe({
+    gCollectionObserver = collectionCursor.observe({
 
         added: function(data) {
             var eventData = parseEventData(data);
@@ -52,6 +61,19 @@ scheduler.meteor = function(collection) {
 
     });
 
+};
+
+scheduler.meteorStop = function() {
+    if(gCollectionObserver)
+        gCollectionObserver.stop();
+
+    var self = this;
+    if(gEventsCollection) {
+        gEventsCollection.each(function(eventId) {
+            self.detachEvent(eventId);
+        });
+        gEventsCollection.clean();
+    }
 };
 
 function CollectionPerformer(collection) {
@@ -90,4 +112,28 @@ function parseEventData(event) {
     }
 
     return eventData;
+}
+
+function DataCollection() {
+    var collectionData = {},
+        currentUid = new Date().valueOf();
+
+    function _uid() {
+        return currentUid++;
+    }
+
+    this.add = function(data) {
+        var dataId = _uid();
+        collectionData[dataId] = data;
+        return dataId;
+    };
+
+    this.each = function(handler) {
+        for(var key in collectionData)
+            handler.call(this, collectionData[key]);
+    };
+
+    this.clean = function() {
+        collectionData = {};
+    };
 }
