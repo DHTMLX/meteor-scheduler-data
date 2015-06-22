@@ -1,6 +1,6 @@
 Package.describe({
   name: "dhtmlx:scheduler-data",
-  version: "0.0.4",
+  version: "0.0.5",
   // Brief, one-line summary of the package.
   summary: "Meteor data adapter for dhtmlxScheduler",
   // URL to the Git repository containing the source code for this package.
@@ -15,7 +15,7 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom("1.1.0.2");
-  api.use(["dhtmlx:scheduler@0.0.1"], "client");
+  api.use(["dhtmlx:scheduler@0.0.2"], "client");
   api.addFiles("scheduler-data.js", "client");
   api.export("scheduler", "client");
 });
