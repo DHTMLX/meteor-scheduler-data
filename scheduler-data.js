@@ -1,7 +1,7 @@
 var gCollectionObserver = null,
     gEventsCollection = null;
 
-scheduler.meteor = function(collection) {
+function meteorStart(collection) {
     gEventsCollection = new DataCollection();
     var collectionCursor = null ;
 
@@ -61,9 +61,9 @@ scheduler.meteor = function(collection) {
 
     });
 
-};
+}
 
-scheduler.meteorStop = function() {
+function meteorStop() {
     if(gCollectionObserver)
         gCollectionObserver.stop();
 
@@ -74,7 +74,7 @@ scheduler.meteorStop = function() {
         });
         gEventsCollection.clean();
     }
-};
+}
 
 function CollectionPerformer(collection) {
 
@@ -137,3 +137,18 @@ function DataCollection() {
         collectionData = {};
     };
 }
+
+
+
+function initSchedulerMeteor(scheduler) {
+    scheduler.meteor = meteorStart;
+    scheduler.meteorStop = meteorStop;
+}
+
+if(window.Scheduler) {
+    Scheduler.plugin(function(scheduler) {
+        initSchedulerMeteor(scheduler);
+    });
+}
+else
+    initSchedulerMeteor(scheduler);
