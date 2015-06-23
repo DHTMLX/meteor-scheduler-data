@@ -31,13 +31,25 @@ function meteorStart(collection) {
         CollectionPerformerObj.save(event);
     }));
 
-    var self = this;
+    var self = this,
+        events = [],
+        render = null;
+
     gCollectionObserver = collectionCursor.observe({
 
         added: function(data) {
             var eventData = parseEventData(data);
             if(!self.getEvent(eventData.id))
-                self.addEvent(eventData);
+                events.push(eventData);
+
+            //Timeout need for recurring events.
+            clearTimeout(render);
+            render = setTimeout(function() {
+                self.parse(events, "json");
+                events = [];
+            }, 5);
+
+
         },
 
         changed: function(data) {
@@ -81,11 +93,16 @@ function CollectionPerformer(collection) {
     this.save = function(event) {
         event = parseEventData(event);
 
+        if(event.id.indexOf("#") + 1)
+            return false;
+
         var savedEventData = this.findEvent(event.id);
         if(savedEventData)
             collection.update({_id: savedEventData._id}, event);
         else
             collection.insert(event);
+
+        return true;
     };
 
     this.remove = function(eventId) {
@@ -102,7 +119,7 @@ function CollectionPerformer(collection) {
 function parseEventData(event) {
     var eventData = {};
     for(var eventProperty in event) {
-        if(eventProperty == "_id")
+        if(eventProperty.charAt(0) == "_")
             continue;
 
         eventData[eventProperty] = event[eventProperty];
