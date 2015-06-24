@@ -98,7 +98,7 @@ function CollectionPerformer(collection) {
 
         var savedEventData = this.findEvent(event.id);
         if(savedEventData)
-            collection.update({_id: savedEventData._id}, event);
+            collection.update({_id: savedEventData._id}, {$set: event});
         else
             collection.insert(event);
 
