@@ -69,6 +69,22 @@ How to use
 	  
 	});
     ```
+    
+    Note that this behavior works only with autopublish package installed.
+    Otherwise, you have to define your custom publication and subscribe to it
+    in the themplate ( or the router ).
+    
+    ```js
+    
+    // On the server side
+    Meteor.publish('all_tasks', function() {
+    	return TasksCollection.find({});
+    });
+    
+    // On the client side ( you can also use SubsManager package )
+    Meteor.subscribe('all_tasks');
+    
+    ```
 
 - Stop the data adapter:
     ```js
