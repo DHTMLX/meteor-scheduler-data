@@ -14,10 +14,12 @@ function meteorStart(collection) {
 
     var CollectionPerformerObj = new CollectionPerformer(collection);
 
+    /*
     gEventsCollection.add(this.attachEvent("onEventLoading", function(event) {
         CollectionPerformerObj.save(event);
         return true;
     }));
+    */
 
     gEventsCollection.add(this.attachEvent("onEventChanged", function(eventId, event) {
         CollectionPerformerObj.save(event);
