@@ -1,6 +1,6 @@
 Package.describe({
   name: "tunifight:scheduler-data",
-  version: "0.0.6_1",
+  version: "0.0.6_2",
   // Brief, one-line summary of the package.
   summary: "Meteor data adapter for dhtmlxScheduler",
   // URL to the Git repository containing the source code for this package.

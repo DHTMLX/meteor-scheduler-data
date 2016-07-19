@@ -47,9 +47,26 @@ How to use
 	  scheduler.init("scheduler_here", new Date());
 
 	  //Init dhtmlxScheduler data adapter.
-	  scheduler.meteor(TasksCollection);
+	  scheduler.meteor({collection: TasksCollection});
 	  //or
-	  scheduler.meteor(TasksCollection.find(/*[anything]*/), TasksCollection);
+	  scheduler.meteor({collection : TasksCollection, collectionCursor: TasksCollection.find(/*[anything]*/)});
+	  //or if you want to use custom meteor methods instead of basic collection (insert, save, remove) functions
+	  scheduler.meteor({collection : TasksCollection, collectionCursor: TasksCollection.find(/*[anything]*/), 
+	  	methods: {
+	  		insert: referenceToInsertMethod,
+	  		update: referenceToUpdateMethod,
+	  		remove: referenceToRemoveMethod
+	  	}
+	  });
+	  // Note that these methods must be defined with ValidatedMethod pacakge
+	  
+	  /* 
+		Methods signature :
+		insert: {objectToSave: Object},
+		update: {_id:String, updateSetObject: Object},
+		remove: {_id: String}
+	  */
+	  
 	});
     ```
 
