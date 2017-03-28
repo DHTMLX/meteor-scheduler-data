@@ -1,6 +1,6 @@
 Package.describe({
   name: "dhtmlx:scheduler-data",
-  version: "0.0.6",
+  version: "0.0.7",
   // Brief, one-line summary of the package.
   summary: "Meteor data adapter for dhtmlxScheduler",
   // URL to the Git repository containing the source code for this package.
@@ -9,7 +9,7 @@ Package.describe({
   // To avoid submitting documentation, set this field to null.
   documentation: "README.md",
   packages: {
-      "dhtmlx:scheduler": "*"
+    "dhtmlx:scheduler": "*"
   }
 });
 

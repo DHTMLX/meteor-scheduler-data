@@ -50,7 +50,40 @@ How to use
 	  scheduler.meteor(TasksCollection);
 	  //or
 	  scheduler.meteor(TasksCollection.find(/*[anything]*/), TasksCollection);
-	});
+	
+	 //or if you want to use validated methods instead of basic collection (insert, save, remove) functions
+	  scheduler.meteor({collection : TasksCollection, collectionCursor: TasksCollection.find(/*[anything]*/), 
+		methods: {
+			insert: referenceToInsertMethod,
+			update: referenceToUpdateMethod,
+			remove: referenceToRemoveMethod
+		}
+	  });
+	  // Note that these methods must be defined with ValidatedMethod pacakge
+	  
+	  /* 
+		Methods signature :
+		insert: {event: Object},
+		update: {_id:String, event: Object},
+		remove: {_id: String}
+	  */
+ 	});
+    ```
+    
+    Note that this behavior works only with autopublish package installed.
+    Otherwise, you have to define your custom publication and subscribe to it
+    in the themplate ( or the router ).
+    
+    ```js
+    
+    // On the server side
+    Meteor.publish('all_tasks', function() {
+    	return TasksCollection.find({});
+    });
+    
+    // On the client side ( you can also use SubsManager package )
+    Meteor.subscribe('all_tasks');
+    
     ```
     
     Note that this behavior works only with autopublish package installed.
