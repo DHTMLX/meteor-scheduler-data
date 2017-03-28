@@ -1,15 +1,15 @@
 Package.describe({
-  name: "tunifight:scheduler-data",
-  version: "0.0.6_2",
+  name: "dhtmlx:scheduler-data",
+  version: "0.0.7",
   // Brief, one-line summary of the package.
   summary: "Meteor data adapter for dhtmlxScheduler",
   // URL to the Git repository containing the source code for this package.
-  git: "https://github.com/nabiltntn/meteor-scheduler-data.git",
+  git: "https://github.com/DHTMLX/meteor-scheduler-data.git",
   // By default, Meteor will default to using README.md for documentation.
   // To avoid submitting documentation, set this field to null.
   documentation: "README.md",
   packages: {
-      "dhtmlx:scheduler": "*"
+    "dhtmlx:scheduler": "*"
   }
 });
 

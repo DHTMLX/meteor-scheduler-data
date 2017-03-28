@@ -2,19 +2,28 @@ var gCollectionObserver = null,
     gEventsCollection = null;
 
 function meteorStart(options) {
-    
     gEventsCollection = new DataCollection();
-    
-    var collectionCursor = options.collectionCursor ? options.collectionCursor : options.collection.find();
-    
-    var CollectionPerformerObj = new CollectionPerformer(options.collection, options.methods);
+    var collectionCursor = null;
+    var collection = null;
+    var methods = null;
 
-    /*
-    gEventsCollection.add(this.attachEvent("onEventLoading", function(event) {
-        CollectionPerformerObj.save(event);
-        return true;
-    }));
-    */
+    if(arguments.length == 2 || options.find){
+        if(arguments.length == 2) {
+            collectionCursor = arguments[0];
+            collection = arguments[1];
+        }
+        else {
+            collection = options;
+            collectionCursor = collection.find();
+        }
+    }
+    else {
+        collection = options.collection;
+        collectionCursor = options.collectionCursor || collection.find();
+        methods = options.methods;
+    }
+
+    var CollectionPerformerObj = new CollectionPerformer(collection, methods);
 
     gEventsCollection.add(this.attachEvent("onEventChanged", function(eventId, event) {
         CollectionPerformerObj.save(event);
@@ -94,32 +103,35 @@ function CollectionPerformer(collection, methods) {
             return false;
 
         var savedEventData = this.findEvent(event.id);
-        if(savedEventData) {
-            if(methods && methods.update) {
-                methods.update.call({_id:savedEventData._id, updateSetObject: event}); 
-            } else {
+        if (savedEventData) {
+            if (methods && methods.update) {
+                methods.update.call({_id: savedEventData._id, event: event});
+            }
+            else {
                 collection.update({_id: savedEventData._id}, {$set: event});
             }
-        } else {
-            if(methods && methods.insert) {
-                methods.insert.call({objectToSave: event});
-            } else {
-                collection.insert(event);
-            }    
-            
         }
+        else {
+            if (methods && methods.insert) {
+                methods.insert.call({event: event});
+            }
+            else {
+                collection.insert(event);
+            }
+        }
+
         return true;
     };
 
-    this.remove = function(eventId) {
+    this.remove = function (eventId) {
         var savedEventData = this.findEvent(eventId);
-        if(savedEventData) {
-            if(methods && methods.remove) {
-                methods.remove.call({_id : savedEventData._id});    
-            } else {
-                collection.remove(savedEventData._id);   
+        if (savedEventData) {
+            if (methods && methods.remove) {
+                methods.remove.call({_id: savedEventData._id});
             }
-            
+            else {
+                collection.remove(savedEventData._id);
+            }
         }
     };
 
